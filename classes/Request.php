@@ -64,6 +64,14 @@ class Request
     private array $uploadedFiles;
 
     /**
+     * Corps brut de la requête (webhooks : la signature porte sur les octets
+     * exacts reçus). Null = pas encore lu (lecture paresseuse de php://input).
+     *
+     * @var string|null
+     */
+    private ?string $rawBody;
+
+    /**
      * Construit une requête.
      *
      * @param string $method       Méthode HTTP (normalisée en MAJUSCULES).
@@ -79,7 +87,8 @@ class Request
         array $parsedBody = [],
         array $serverParams = [],
         array $cookies = [],
-        array $uploadedFiles = []
+        array $uploadedFiles = [],
+        ?string $rawBody = null
     ) {
         $this->method        = strtoupper($method);
         $this->queryParams   = $queryParams;
@@ -87,6 +96,7 @@ class Request
         $this->serverParams  = $serverParams;
         $this->cookies       = $cookies;
         $this->uploadedFiles = $uploadedFiles;
+        $this->rawBody       = $rawBody;
     }
 
     // ------------------------------------------------------------------
@@ -134,7 +144,8 @@ class Request
             $parsedBody,
             $psr->getServerParams(),
             $psr->getCookieParams(),
-            $psr->getUploadedFiles()
+            $psr->getUploadedFiles(),
+            (string) $psr->getBody()
         );
     }
 
@@ -161,6 +172,23 @@ class Request
     // ------------------------------------------------------------------
     // API (inspirée PSR-7)
     // ------------------------------------------------------------------
+
+    /**
+     * Corps brut de la requête, tel que reçu (octets exacts).
+     *
+     * Nécessaire aux webhooks, dont la signature se calcule sur le corps brut
+     * et non sur les champs décodés.
+     *
+     * @return string
+     */
+    public function getRawBody(): string
+    {
+        if ($this->rawBody === null) {
+            $this->rawBody = (string) file_get_contents('php://input');
+        }
+
+        return $this->rawBody;
+    }
 
     /**
      * Retourne la méthode HTTP (MAJUSCULES).
