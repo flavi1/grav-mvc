@@ -77,8 +77,11 @@ class PageFactory
 			$header['template'] =$templateName;
 		}
 
-		$page = new Page();$page->header($header);
-		$page->path($this->basePath);		// ou pointer vers "/dev/null" ? TODO pros? cons?
+		$page = new Page();
+		$page->header($header);
+		// Dossier « physique » de la page virtuelle : le dossier du plugin (existant, lisible). Un chemin inexistant
+		// (ex. /dev/null) ferait échouer les appels de Grav qui listent les médias ou testent le dossier de la page.
+		$page->path($this->basePath);
 		$page->filePath($this->basePath . '/mvc-virtual-route.md');
 		$page->id(md5($route));
 		$page->name('virtual.md');
@@ -91,11 +94,9 @@ class PageFactory
 			$page->content($response->getBody());
 		}
 
-		// --- ENREGISTREMENT AUPRÈS DE GRAV POUR ÉVITER LA 404 ---
-		$pages = $this->grav['pages'];
-		$routes = $pages->routes();
-		$routes[$route] = $page->path(); // Injecter la page dans l'index global des pages de Grav$pages->addPage($page,$route); TODO => déplacer ça dans RouteManager::add() ? pros? cons?
-
+		// L'enregistrement auprès de Grav (`$pages->addPage()`, qui évite la 404) est fait par mvc.php, une seule
+		// fois, pour la route effectivement servie. Il ne va pas dans RouteManager::add() : celui-ci déclare toutes
+		// les routes au démarrage, alors qu'une page virtuelle n'existe que pour la requête en cours.
 		return $page;
 	}
 }

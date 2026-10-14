@@ -56,7 +56,7 @@ abstract class AbstractController
     {
         $this->grav    = $grav ?? Grav::instance();
         $this->request = $request;
-        $this->session = $grav['session'];
+        $this->session = $this->grav['session'];
     }
 
     // ------------------------------------------------------------------
