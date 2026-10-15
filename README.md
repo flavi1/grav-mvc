@@ -8,9 +8,10 @@ ou d'effectuer une redirection.
 
 ## Installation
 
-1. Placez le plugin dans `user/plugins/mvc/` (ou `private/grav/plugins/mvc/`
-   selon votre arborescence).
-2. Vérifiez qu'il est activé (`mvc.yaml` : `enabled: true`).
+1. Placez le plugin dans `user/plugins/mvc/` (dépôt : https://github.com/flavi1/grav-mvc ; sur l'hébergement
+   mutualisé : `/shared/grav-2/user/plugins/mvc/`, déployé par GitHub Actions, voir `AGENTS.md`).
+2. Activez-le dans la configuration du site (`user/config/plugins/mvc.yaml` : `enabled: true`) : il est
+   **désactivé par défaut**, le dossier des plugins pouvant être partagé par plusieurs sites.
 3. Déclarez la dépendance dans le plugin qui l'utilise afin de garantir l'ordre
    de chargement.
 
