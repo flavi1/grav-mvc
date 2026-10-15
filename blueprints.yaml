@@ -3,9 +3,8 @@ version: 0.1.0
 description: Apporte à Grav une couche « routes -> controller » minimaliste et réutilisable (Grav n'a pas de MVC natif).
 icon: plug
 author:
-  name: 
-  email: 
-homepage: 
+  name: Guillon Flavien
+homepage: https://github.com/flavi1/grav-mvc
 license: MIT
 
 dependencies:
@@ -18,7 +17,7 @@ form:
       type: toggle
       label: PLUGIN_ADMIN.PLUGIN_STATUS
       highlight: 1
-      default: 1
+      default: 0
       options:
         1: PLUGIN_ADMIN.ENABLED
         0: PLUGIN_ADMIN.DISABLED
