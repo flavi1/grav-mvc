@@ -61,17 +61,20 @@ class PageFactory
 		$templateName =$response->getTemplate();
 		$hasTemplate  =$response->hasTemplate();
 
-		$title =$hasTemplate
-			? 'MVC - ' . $templateName
-			: 'MVC - ' . $route;
+		// Titre : celui donné par le contrôleur (Response::setTitle()), sinon déduit de la route
+		// (« /mon-compte/deconnexion » → « Deconnexion »), jamais un libellé technique.
+		$title = $response->getTitle() ?? self::titleFromRoute($route);
 
-		$header = [
+		$header = array_replace($response->getPageHeader(), [
 			'title'        => $title,
 			'routable'     => true,
 			'visible'      => false,
 			'published'    => true,
 			'cache_enable' => false
-		];
+		]);
+		if ($response->getMeta() !== []) {
+			$header['metadata'] = $response->getMeta();
+		}
 
 		if ($hasTemplate) {
 			$header['template'] =$templateName;
@@ -99,4 +102,13 @@ class PageFactory
 		// les routes au démarrage, alors qu'une page virtuelle n'existe que pour la requête en cours.
 		return $page;
 	}
+
+    /** Titre lisible tiré du dernier segment de la route (« /checkout/payment-return » → « Payment return »). */
+    public static function titleFromRoute(string $route): string
+    {
+        $segment = basename(trim($route, '/')) ?: 'Accueil';
+        $segment = str_replace(['-', '_'], ' ', rawurldecode($segment));
+
+        return mb_strtoupper(mb_substr($segment, 0, 1)) . mb_substr($segment, 1);
+    }
 }

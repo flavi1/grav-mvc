@@ -123,6 +123,20 @@ L'objet `Response` peut aussi être configuré à la main (setters chaînables) 
 Les variables fournies à `view()` (ou via `setTwigVar()` / `setTwigVars()`)
 sont injectées dans le contexte du template Grav de la page produite.
 
+### Titre et métadonnées de la page
+
+La page produite reçoit le titre donné par le contrôleur, sinon un titre tiré de la route (`/mon-compte` → « Mon compte »).
+Les balises `<meta>` passent par l'en-tête Grav `metadata` (affiché par le thème comme pour une page ordinaire) :
+
+```php
+return $this->view('shop/cart', $vars)
+    ->setTitle('Votre panier')
+    ->setDescription('Vérifiez vos articles avant de commander.')
+    ->setMeta('robots', 'noindex, nofollow');     // pages privées : pas d'indexation
+```
+
+`setPageHeader([...])` ajoute d'autres en-têtes de page Grav (ex. `body_classes`).
+
 ### Sortie brute (sans layout du thème)
 
 Par défaut, une réponse de **contenu brut** (`html()`) est tout de même
@@ -214,10 +228,11 @@ déclarez le plugin MVC comme dépendance.
 - Fabriques : `html()`, `json()`, `redirect()`, `template()`.
 - Setters (chaînables) : `setTemplate()`, `setContentType()`, `setHttpCode()`
   (alias `setStatusCode()`), `setContent()` (alias `setBody()`), `setRedirect()`,
-  `setTwigVar()`, `setTwigVars()`, `useDefaultLayout(bool $use = true)`.
+  `setTwigVar()`, `setTwigVars()`, `useDefaultLayout(bool $use = true)`, `setTitle()`, `setDescription()`,
+  `setMeta()`, `setPageHeader()` (depuis la 0.2.0).
 - Getters : `getTemplate()`, `getContentType()`, `getHttpCode()`
   (alias `getStatusCode()`), `getContent()` (alias `getBody()`),
-  `getRedirectUrl()`, `getTwigVars()`, `getHeaders()`.
+  `getRedirectUrl()`, `getTwigVars()`, `getHeaders()`, `getTitle()`, `getMeta()`, `getPageHeader()`.
 - Prédicats : `hasTemplate()`, `isRedirect()`, `usesDefaultLayout()`,
   `isRawOutput()`.
 - Émission : `sendHeaders()` (émet le statut + les en-têtes ; utilisé pour les

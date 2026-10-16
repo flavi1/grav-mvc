@@ -90,6 +90,27 @@ class Response
     private bool $useDefaultLayout = true;
 
     /**
+     * Titre de la page virtuelle (balise <title>, titre de page du thème). Null : titre déduit de la route.
+     *
+     * @var string|null
+     */
+    private ?string $title = null;
+
+    /**
+     * Balises <meta> de la page virtuelle (en-tête Grav `metadata`) : description, robots…
+     *
+     * @var array<string, string>
+     */
+    private array $meta = [];
+
+    /**
+     * En-têtes de page Grav supplémentaires (ex. `body_classes`), fusionnés dans la page virtuelle.
+     *
+     * @var array<string, mixed>
+     */
+    private array $pageHeader = [];
+
+    /**
      * Construit une réponse.
      *
      * @param Grav|null $grav Conteneur Grav (résolu via Grav::instance() si
@@ -422,6 +443,63 @@ class Response
         }
 
         return $headers;
+    }
+
+    // ------------------------------------------------------------------
+    // Page virtuelle : titre et métadonnées
+    // ------------------------------------------------------------------
+
+    /** Titre de la page (balise <title> et titre affiché par le thème). */
+    public function setTitle(?string $title): self
+    {
+        $title = $title !== null ? trim($title) : null;
+        $this->title = $title === '' ? null : $title;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    /** Description de la page (<meta name="description">). */
+    public function setDescription(string $description): self
+    {
+        return $this->setMeta('description', $description);
+    }
+
+    /** Balise <meta> (ex. `robots` → `noindex, nofollow`) ; valeur vide = retirée. */
+    public function setMeta(string $name, string $value): self
+    {
+        $value = trim($value);
+        if ($value === '') {
+            unset($this->meta[$name]);
+        } else {
+            $this->meta[$name] = $value;
+        }
+
+        return $this;
+    }
+
+    /** @return array<string, string> */
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    /** En-têtes de page Grav supplémentaires (fusionnés ; `title` et `metadata` passent par setTitle()/setMeta()). */
+    public function setPageHeader(array $header): self
+    {
+        $this->pageHeader = array_replace($this->pageHeader, $header);
+
+        return $this;
+    }
+
+    /** @return array<string, mixed> */
+    public function getPageHeader(): array
+    {
+        return $this->pageHeader;
     }
 
     // ------------------------------------------------------------------
