@@ -436,13 +436,30 @@ class Response
      */
     public function getHeaders(): array
     {
-        $headers = ['Content-Type' => $this->contentType];
+        $headers = ['Content-Type' => $this->contentType] + $this->extraHeaders;
 
         if ($this->isRedirect()) {
             $headers['Location'] = (string) $this->redirectUrl;
         }
 
         return $headers;
+    }
+
+    /** En-têtes supplémentaires (nom => valeur), émis avec une réponse brute. */
+    private array $extraHeaders = [];
+
+    /**
+     * Ajoute un en-tête HTTP à une réponse brute (ex. `Content-Disposition` d'un PDF, `Cache-Control`). Les retours à la
+     * ligne sont refusés (injection d'en-têtes).
+     */
+    public function setHeader(string $name, string $value): self
+    {
+        if (!preg_match('/^[A-Za-z0-9-]{1,64}$/', $name) || preg_match('/[\r\n]/', $value) || strcasecmp($name, 'Content-Type') === 0) {
+            throw new \InvalidArgumentException('En-tête HTTP invalide : ' . $name);
+        }
+        $this->extraHeaders[$name] = $value;
+
+        return $this;
     }
 
     // ------------------------------------------------------------------

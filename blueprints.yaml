@@ -1,5 +1,5 @@
 name: MVC
-version: 0.2.0
+version: 0.3.0
 description: Apporte à Grav une couche « routes -> controller » minimaliste et réutilisable (Grav n'a pas de MVC natif).
 icon: plug
 author:

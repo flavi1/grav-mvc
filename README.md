@@ -229,7 +229,8 @@ déclarez le plugin MVC comme dépendance.
 - Setters (chaînables) : `setTemplate()`, `setContentType()`, `setHttpCode()`
   (alias `setStatusCode()`), `setContent()` (alias `setBody()`), `setRedirect()`,
   `setTwigVar()`, `setTwigVars()`, `useDefaultLayout(bool $use = true)`, `setTitle()`, `setDescription()`,
-  `setMeta()`, `setPageHeader()` (depuis la 0.2.0).
+  `setMeta()`, `setPageHeader()` (depuis la 0.2.0), `setHeader(nom, valeur)` (en-tête HTTP d'une réponse brute, ex.
+  `Content-Disposition` d'un PDF ; depuis la 0.3.0).
 - Getters : `getTemplate()`, `getContentType()`, `getHttpCode()`
   (alias `getStatusCode()`), `getContent()` (alias `getBody()`),
   `getRedirectUrl()`, `getTwigVars()`, `getHeaders()`, `getTitle()`, `getMeta()`, `getPageHeader()`.
